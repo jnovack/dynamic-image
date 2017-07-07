@@ -8,7 +8,7 @@ class Image {
       $file = $_GET['file'];
       $utils = new Utils();
       $image = new Imagick();
-      $image->readImage('../images/managed/'.$file);
+      $image->readImage('./images/'.$file);
       $imageMaxWidth = $image->getImageWidth();
       $maxBlur = 50;
       $width = (isset($_GET['width']) && $_GET['width'] != '' && $_GET['width'] <= $imageMaxWidth) ? $_GET['width'] : $imageMaxWidth;
@@ -96,7 +96,7 @@ class Image {
       echo $image;
 
     }else{
-      header("Location: https:www.parxcasino.com");
+      header('HTTP/1.0 403 Forbidden');
       die();
     }
     }
@@ -113,7 +113,7 @@ class Utils {
   function generateOverlay($image, $state, $width)
   {
     $overlay = new Imagick();
-    $overlay->readImage('../images/overlays/'.$state.'.png');
+    $overlay->readImage('./overlays/'.$state.'.png');
     $overlay->scaleImage($width, 0);
     $image->compositeImage($overlay, imagick::COMPOSITE_OVER, 0, 0);
   }
