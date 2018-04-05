@@ -3,13 +3,6 @@
 /* CUSTOMIZATION */
 $directory = "./images/";
 
-/*************************************************************************/
-
-/* Autoloader */
-spl_autoload_register(function ($class_name) {
-    include 'classes/' . $class_name . '.php';
-});
-
 /* Valid options for enums */
 $enums = array(
     'state'         => array('soldout', 'cancelled', 'delayed'),
@@ -17,6 +10,8 @@ $enums = array(
     'cropX'         => array('top','center','bottom'),
     'cropY'         => array('left','center','right'),
 );
+
+/*************************************************************************/
 
 /* Sanitize filename */
 $filters = array(
@@ -39,6 +34,25 @@ if ( !file_exists($filename) ) {
     header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found', true, 404);
     exit(1);
 }
+
+header("Content-disposition: inline; filename='".basename($filename)."'");
+
+switch(substr($filename, -3)) {
+    case "jpg": $contenttype = "image/jpeg"; break;
+    case "png": $contenttype = "image/png"; break;
+}
+header("Content-Type: " . $contenttype);
+
+/* Quick-Serve */
+if (INPUT_GET.length == 1) {
+    readfile($filename);
+    exit;
+}
+
+/* Autoloader */
+spl_autoload_register(function ($class_name) {
+    include 'classes/' . $class_name . '.php';
+});
 
 /* Load image */
 $img = new Image($filename);
@@ -92,8 +106,8 @@ $SANITIZED_OPTS = array_filter(filter_input_array(INPUT_GET, $rules));
 
 /* Job's done! */
 header("Content-Type: " . $img->format);
-header("Content-disposition: inline; filename='".basename($filename)."'");
 header("X-ImageMagick-Options: " . json_encode($SANITIZED_OPTS));
 echo $img->generate($SANITIZED_OPTS);
+imagedestroy($img);
 
 ?>
