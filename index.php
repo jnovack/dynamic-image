@@ -43,11 +43,11 @@ switch(substr($filename, -3)) {
 }
 header("Content-Type: " . $contenttype);
 
-/* Quick-Serve */
-if (INPUT_GET.length == 1) {
-    readfile($filename);
-    exit;
-}
+/* Quick-Serve */  // Not Working
+// if ($_GET.length == 1) {
+//     readfile($filename);
+//     exit;
+// }
 
 /* Autoloader */
 spl_autoload_register(function ($class_name) {
