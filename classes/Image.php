@@ -24,11 +24,6 @@ class Image {
             $this->adjustBrightness($options['brightness']);
         }
 
-        /* Adjust Blur */
-        if(isset($options['blur'])) {
-            $this->blurImage($options['blur']);
-        }
-
         /* Crop */
         if(isset($options['cropWidth']) || isset($options['cropHeight'])) {
             $cW = isset($options['cropWidth']) ? $options['cropWidth'] : $this->width;
@@ -87,6 +82,11 @@ class Image {
         /* Adjust Quality */
         if(isset($options['quality'])) {
             $this->compressImage($options['quality']);
+        }
+
+        /* Adjust Blur */
+        if(isset($options['blur'])) {
+            $this->blurImage($options['blur']);
         }
 
         return $this->image;
