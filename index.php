@@ -1,7 +1,8 @@
 <?php
 
-/* CUSTOMIZATION */
-$directory = "./images/";
+/* ENVIRONMENT */
+$overlay_directory = getenv('PHP_DIRECTORY_OVERLAYS', true) ?: realpath('./overlays');
+$images_directory = getenv('PHP_DIRECTORY_IMAGES', true) ?: realpath('./images');
 
 /* Valid options for enums */
 $enums = array(
@@ -28,7 +29,7 @@ if ( empty($SANITIZED_GET) || $SANITIZED_GET['file'] === false) {
     exit(1);
 }
 
-$filename = $directory . $SANITIZED_GET['file'];
+$filename = $images_directory . $SANITIZED_GET['file'];
 
 if ( !file_exists($filename) ) {
     header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found', true, 404);
@@ -103,6 +104,10 @@ $rules = array(
 
 /* Filter $_GET according to the $rules above, then remove blank/NULL/false values */
 $SANITIZED_OPTS = array_filter(filter_input_array(INPUT_GET, $rules));
+
+if (is_dir($overlay_directory) && is_readable($overlay_directory)) {
+    $SANITIZED_OPTS['dir_overlays'] = $overlay_directory;
+}
 
 /* Job's done! */
 header("Content-Type: " . $img->format);

@@ -19,6 +19,10 @@ class Image {
    }
 
     public function generate($options) {
+        if (isset($options['dir_overlays']) && !is_dir($options['dir_overlays'])) {
+            error_log('dir_overlays ' . $options['dir_overlays'] . ' does not exist');
+        }
+
         /* Adjust Brightness */
         if(isset($options['brightness'])) {
             $this->adjustBrightness($options['brightness']);
@@ -60,10 +64,10 @@ class Image {
         }
 
 
-        // if(in_array($state, $validStates))
-        // {
-        //     $utils->generateOverlay($image, $state, $width);
-        // }
+        if(isset($options['state']) && is_readable($options['dir_overlays'])) {
+            // error_log($state)
+            $this->generateOverlay($options['state'], $options['dir_overlays']);
+        }
 
         // if(in_array($overlay, $validOverlays))
         // {
@@ -165,15 +169,25 @@ class Image {
 
     /**
     * [generateOverlay description]
-    * @param  [type] $state [description]
-    * @param  [type] $width [description]
-    * @return [type]        [description]
+    * @param  [type] $state     [description]
+    * @param  [type] $directory [description]
+    * @return [type]            [description]
     */
-    private function generateOverlay($image, $state, $width) {
-        $overlay = new Imagick();
-        $overlay->readImage('./overlays/'.$state.'.png');
-        $overlay->scaleImage($width, 0);
-        $image->compositeImage($overlay, imagick::COMPOSITE_OVER, 0, 0);
+    private function generateOverlay($state, $directory) {
+        $overlay_file = $directory . '/' . $state . '.png';
+        if ( !file_exists($overlay_file) ) {
+            error_log('generateOverlay() ERROR: '. $overlay_file . ' does not exist.');
+            return;
+        }
+        try {
+            $overlay = new Imagick();
+            $overlay->readImage($overlay_file);
+            $overlay->scaleImage($this->width, 0);
+            $this->image->compositeImage($overlay, imagick::COMPOSITE_OVER, 0, 0);
+        }
+        catch (Exception $e) {
+            error_log('generateOverlay() Exception: ' . $e->getMessage());
+        }
     }
 
 }
