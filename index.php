@@ -7,6 +7,7 @@ $images_directory = getenv('PHP_DIRECTORY_IMAGES', true) ?: realpath('./images')
 /* Valid options for enums */
 $enums = array(
     'overlay'       => array('soldout', 'cancelled', 'delayed'),
+    'gravity'       => array('northeast', 'northwest', 'southeast', 'southwest'),
     'disclaimer'    => array('disclaimer', 'disclaimertop'),
     'cropX'         => array('top','center','bottom'),
     'cropY'         => array('left','center','right'),
@@ -97,6 +98,9 @@ $rules = array(
     'overlay'       =>  array('filter'    => FILTER_CALLBACK,
                              'options'    => array(new Sanitize( array("values" => $enums['overlay'], "cast" => "string")), 'FILTER_ENUM')
                         ),
+    'gravity'       =>  array('filter'    => FILTER_CALLBACK,
+                             'options'    => array(new Sanitize( array("values" => $enums['gravity'], "cast" => "string")), 'FILTER_ENUM')
+                        ),
     'disclaimer'    =>  array('filter'    => FILTER_CALLBACK,
                              'options'    => array(new Sanitize( array("values" => $enums['disclaimer'], "cast" => "string")), 'FILTER_ENUM')
                         )
@@ -105,9 +109,13 @@ $rules = array(
 /* Filter $_GET according to the $rules above, then remove blank/NULL/false values */
 $SANITIZED_OPTS = array_filter(filter_input_array(INPUT_GET, $rules));
 
+// Set option from environment
 if (is_dir($overlay_directory) && is_readable($overlay_directory)) {
     $SANITIZED_OPTS['dir_overlays'] = $overlay_directory;
 }
+
+// Set default if it does not exist
+$SANITIZED_OPTS['gravity'] = isset($SANITIZED_OPTS['gravity']) ? $SANITIZED_OPTS['gravity'] : 'northwest';
 
 /* Job's done! */
 header("Content-Type: " . $img->format);

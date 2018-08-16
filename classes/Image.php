@@ -82,7 +82,7 @@ class Image {
 
         /* Add Overlay to Desired Image */
         if(isset($options['overlay']) && is_readable($options['dir_overlays'])) {
-            $this->generateOverlay($options['overlay'], $options['dir_overlays']);
+            $this->generateOverlay($options['overlay'], $options['dir_overlays'], $options['gravity']);
         }
 
         return $this->image;
@@ -163,25 +163,39 @@ class Image {
     * [generateOverlay description]
     * @param  [type] $overlay   [description]
     * @param  [type] $directory [description]
+    * @param  [type] $gravity   [description]
     * @return [type]            [description]
     */
-    private function generateOverlay($overlay, $directory) {
+    private function generateOverlay($overlay, $directory, $gravity) {
         $overlay_file = $directory . '/' . $overlay . '.png';
         if ( !file_exists($overlay_file) ) {
             error_log('generateOverlay() ERROR: '. $overlay_file . ' does not exist.');
             return;
         }
-        try {
-            $overlay = new Imagick();
-            $overlay->readImage($overlay_file);
-            $overlay->scaleImage($this->width, 0);
-            $this->image->compositeImage($overlay, imagick::COMPOSITE_OVER, 0, 0);
-        }
-        catch (Exception $e) {
-            error_log('generateOverlay() Exception: ' . $e->getMessage());
-        }
-    }
 
+        // Load Overlay
+        $overlay = new Imagick();
+        $overlay->readImage($overlay_file);
+        $overlay->scaleImage($this->width, 0);
+
+        // Gravity
+        $x = 0;
+        $y = 0;
+        switch ($gravity) {
+            case "northeast":
+                $x = $this->width - $overlay->getImageWidth();
+                break;
+            case "southeast":
+                $x = $this->width - $overlay->getImageWidth();
+                $y = $this->height - $overlay->getImageHeight();
+                break;
+            case "southwest":
+                $y = $this->height - $overlay->getImageHeight();
+                break;
+        }
+
+        $this->image->compositeImage($overlay, imagick::COMPOSITE_OVER, $x, $y);
+    }
 }
 
 ?>
