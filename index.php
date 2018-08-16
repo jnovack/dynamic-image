@@ -6,8 +6,8 @@ $images_directory = getenv('PHP_DIRECTORY_IMAGES', true) ?: realpath('./images')
 
 /* Valid options for enums */
 $enums = array(
-    'state'         => array('soldout', 'cancelled', 'delayed'),
-    'overlay'       => array('disclaimer', 'disclaimertop'),
+    'overlay'       => array('soldout', 'cancelled', 'delayed'),
+    'disclaimer'    => array('disclaimer', 'disclaimertop'),
     'cropX'         => array('top','center','bottom'),
     'cropY'         => array('left','center','right'),
 );
@@ -94,11 +94,11 @@ $rules = array(
     'cropY'         =>  array('filter'     => FILTER_CALLBACK,
                              'options'    => array(new Sanitize( array("values" => $enums['cropY'], "cast" => "string")), 'FILTER_ENUM')
                         ),
-    'state'         =>  array('filter'     => FILTER_CALLBACK,
-                             'options'    => array(new Sanitize( array("values" => $enums['state'], "cast" => "string")), 'FILTER_ENUM')
-                        ),
-    'overlay'       =>  array('filter'     => FILTER_CALLBACK,
+    'overlay'       =>  array('filter'    => FILTER_CALLBACK,
                              'options'    => array(new Sanitize( array("values" => $enums['overlay'], "cast" => "string")), 'FILTER_ENUM')
+                        ),
+    'disclaimer'    =>  array('filter'    => FILTER_CALLBACK,
+                             'options'    => array(new Sanitize( array("values" => $enums['disclaimer'], "cast" => "string")), 'FILTER_ENUM')
                         )
 );
 

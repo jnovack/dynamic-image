@@ -63,25 +63,12 @@ class Image {
 
         }
 
-
-        if(isset($options['state']) && is_readable($options['dir_overlays'])) {
-            // error_log($state)
-            $this->generateOverlay($options['state'], $options['dir_overlays']);
-        }
-
-        // if(in_array($overlay, $validOverlays))
-        // {
-        //     $utils->generateOverlay($image, $overlay, $width);
-        // }
-
-
         /* Adjust Size */
         if(isset($options['width']) || isset($options['height'])) {
             $w = isset($options['width']) ? $options['width'] : 0;
             $h = isset($options['height']) ? $options['height'] : 0;
             $this->adjustSize($w, $h);
         }
-
 
         /* Adjust Quality */
         if(isset($options['quality'])) {
@@ -91,6 +78,11 @@ class Image {
         /* Adjust Blur */
         if(isset($options['blur'])) {
             $this->blurImage($options['blur']);
+        }
+
+        /* Add Overlay to Desired Image */
+        if(isset($options['overlay']) && is_readable($options['dir_overlays'])) {
+            $this->generateOverlay($options['overlay'], $options['dir_overlays']);
         }
 
         return $this->image;
@@ -169,12 +161,12 @@ class Image {
 
     /**
     * [generateOverlay description]
-    * @param  [type] $state     [description]
+    * @param  [type] $overlay   [description]
     * @param  [type] $directory [description]
     * @return [type]            [description]
     */
-    private function generateOverlay($state, $directory) {
-        $overlay_file = $directory . '/' . $state . '.png';
+    private function generateOverlay($overlay, $directory) {
+        $overlay_file = $directory . '/' . $overlay . '.png';
         if ( !file_exists($overlay_file) ) {
             error_log('generateOverlay() ERROR: '. $overlay_file . ' does not exist.');
             return;
