@@ -88,10 +88,10 @@ $rules = array(
                               'flags'     => FILTER_REQUIRE_SCALAR,
                               'options'   => array('min_range' => 1, 'max_range' => $img->height)
                         ),
-    'cropX'         =>  array('filter'     => FILTER_CALLBACK,
+    'cropX'         =>  array('filter'    => FILTER_CALLBACK,
                              'options'    => array(new Sanitize( array("values" => $enums['cropX'], "cast" => "string")), 'FILTER_ENUM')
                         ),
-    'cropY'         =>  array('filter'     => FILTER_CALLBACK,
+    'cropY'         =>  array('filter'    => FILTER_CALLBACK,
                              'options'    => array(new Sanitize( array("values" => $enums['cropY'], "cast" => "string")), 'FILTER_ENUM')
                         ),
     'overlay'       =>  array('filter'    => FILTER_CALLBACK,
