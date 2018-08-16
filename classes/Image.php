@@ -95,19 +95,19 @@ class Image {
      */
 
     /**
-    * [adjustBrightness description]
-    * @param  [type] $brightness [description]
-    * @return [type]             [description]
+    * Adjust brightness of Image
+    * @param  int $brightness   Level of brightness to apply.
+    * @return void              Brightness-Adjusted Image.
     */
     private function adjustBrightness($brightness) {
         $this->image->brightnessContrastImage($brightness, 0, 134217727);
     }
 
     /**
-    * [adjustSize description]
-    * @param  [type] $width      [description]
-    * @param  [type] $height     [description]
-    * @return [type]             [description]
+    * Adjust size of Image
+    * @param  int $width        Final width in pixels.
+    * @param  int $height       Final height in pixels.
+    * @return void              Resized Image.
     */
     private function adjustSize($width, $height) {
         $this->image->thumbnailImage($width, $height);
@@ -115,33 +115,34 @@ class Image {
     }
 
     /**
-    * [blurImage description]
-    * @param  [type] $blur  [description]
-    * @param  [type] $width [description]
-    * @return [type]        [description]
+    * Add blur to Image.
+    * @param  int $blur         Level of blur.
+    * @return void              Blurred Image.
     */
     private function blurImage($blur) {
+        // Blurring a tiny image is computationally sexier than blurring a full-size
+        // image, with marginal loss in visual quality (you are blurring it after all.)
         $this->image->thumbnailImage(240, 0);
         $this->image->blurImage(0, $blur);
         $this->image->thumbnailImage($this->width, 0);
     }
 
     /**
-    * [compressImage description]
-    * @param  [type] $quality [description]
-    * @return [type]          [description]
+    * Reduce quality of Image.
+    * @param  [type] $quality   Compress quality of final image.
+    * @return void              Lower quality Image.
     */
     private function compressImage($quality) {
         $this->image->setImageCompressionQuality($quality);
     }
 
     /**
-    * [cropImage description]
-    * @param  [type] $cW    [description]
-    * @param  [type] $cH    [description]
-    * @param  [type] $cX    [description]
-    * @param  [type] $cY    [description]
-    * @return [type]        [description]
+    * Crop Image.
+    * @param  int $cW           Width of the crop.
+    * @param  int $cH           Height of the crop.
+    * @param  int $cX           X coordinate of the cropped region's top left corner.
+    * @param  int $cY           Y coordinate of the cropped region's top left corner.
+    * @return void              Cropped Image.
     */
     private function cropImage($cW, $cH, $cX, $cY) {
         $this->image->cropImage($cW, $cH, $cX, $cY);
@@ -149,8 +150,8 @@ class Image {
     }
 
     /**
-    * [getDimensions description]
-    * @return [type]             [description]
+    * Get the dimensions of the image, set them as a public variables.
+    * @return void              Sets public variables 'width' and 'height'.
     */
     private function getDimensions() {
         $this->width = $this->image->getImageWidth();
@@ -160,11 +161,11 @@ class Image {
     /***********************************/
 
     /**
-    * [generateOverlay description]
-    * @param  [type] $directory [description]
-    * @param  [type] $overlay   [description]
-    * @param  [type] $gravity   [description]
-    * @return [type]            [description]
+    * Add an overlay to the Image.
+    * @param  string $directory Directory where the overlays are found.
+    * @param  string $overlay   Overlay filename, without '.png'.
+    * @param  string $gravity   Direction to pull the overlay over the image.
+    * @return void              Image with overlay attached.
     */
     private function generateOverlay($directory, $overlay, $gravity) {
         $overlay_file = $directory . '/' . $overlay . '.png';
