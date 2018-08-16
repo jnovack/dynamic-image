@@ -82,7 +82,7 @@ class Image {
 
         /* Add Overlay to Desired Image */
         if(isset($options['overlay']) && is_readable($options['dir_overlays'])) {
-            $this->generateOverlay($options['overlay'], $options['dir_overlays'], $options['gravity']);
+            $this->generateOverlay($options['dir_overlays'], $options['overlay'], $options['gravity']);
         }
 
         return $this->image;
@@ -161,12 +161,12 @@ class Image {
 
     /**
     * [generateOverlay description]
-    * @param  [type] $overlay   [description]
     * @param  [type] $directory [description]
+    * @param  [type] $overlay   [description]
     * @param  [type] $gravity   [description]
     * @return [type]            [description]
     */
-    private function generateOverlay($overlay, $directory, $gravity) {
+    private function generateOverlay($directory, $overlay, $gravity) {
         $overlay_file = $directory . '/' . $overlay . '.png';
         if ( !file_exists($overlay_file) ) {
             error_log('generateOverlay() ERROR: '. $overlay_file . ' does not exist.');
