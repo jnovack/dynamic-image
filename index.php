@@ -1,4 +1,6 @@
 <?php
+/* Metrics */
+$time = 0-microtime(true);
 
 /* ENVIRONMENT */
 $overlay_directory = getenv('PHP_DIRECTORY_OVERLAYS', true) ?: realpath('./overlays');
@@ -15,6 +17,18 @@ $enums = array(
 
 /*************************************************************************/
 
+/* Validation */
+if (!is_dir($images_directory) || !is_readable($images_directory)) {
+    header($_SERVER["SERVER_PROTOCOL"] . ' 501 Not Implemented', true, 501);
+    error_log('php-dynamic-image is not properly configured. Please set PHP_DIRECTORY_IMAGES environment variable to a valid path.');
+    exit(1);
+}
+
+/* Autoloader */
+spl_autoload_register(function ($class_name) {
+    include 'classes/' . $class_name . '.php';
+});
+
 /* Sanitize filename */
 $filters = array(
     /* Permits files in (root) and sub-directories of (root).  Fail if attempted ".." */
@@ -25,7 +39,13 @@ $filters = array(
 
 $SANITIZED_GET = array_filter(filter_input_array(INPUT_GET, $filters));
 
-if ( empty($SANITIZED_GET) || $SANITIZED_GET['file'] === false) {
+// Set option from environment
+if (is_dir($overlay_directory) && is_readable($overlay_directory)) {
+    $SANITIZED_GET['dir_overlays'] = $overlay_directory;
+}
+
+/* Load File */
+if ( empty($SANITIZED_GET) || empty($SANITIZED_GET['file']) || $SANITIZED_GET['file'] === false) {
     header($_SERVER["SERVER_PROTOCOL"] . ' 400 Bad Request', true, 400);
     exit(1);
 }
@@ -37,6 +57,7 @@ if ( !file_exists($filename) ) {
     exit(1);
 }
 
+/* Begin Output */
 header("Content-disposition: inline; filename='".basename($filename)."'");
 
 switch(substr($filename, -3)) {
@@ -45,21 +66,10 @@ switch(substr($filename, -3)) {
 }
 header("Content-Type: " . $contenttype);
 
-/* Quick-Serve */  // Not Working
-// if ($_GET.length == 1) {
-//     readfile($filename);
-//     exit;
-// }
-
-/* Autoloader */
-spl_autoload_register(function ($class_name) {
-    include 'classes/' . $class_name . '.php';
-});
-
-/* Load image */
+/* Begin Processing */
 $img = new Image($filename);
 
-/* Sanitize options for image manipulation */
+/* Sanitize Options for Mmage Manipulation */
 $rules = array(
     'brightness'    =>  array('filter'    => FILTER_VALIDATE_INT,
                               'flags'     => FILTER_REQUIRE_SCALAR,
@@ -109,18 +119,16 @@ $rules = array(
 /* Filter $_GET according to the $rules above, then remove blank/NULL/false values */
 $SANITIZED_OPTS = array_filter(filter_input_array(INPUT_GET, $rules));
 
-// Set option from environment
-if (is_dir($overlay_directory) && is_readable($overlay_directory)) {
-    $SANITIZED_OPTS['dir_overlays'] = $overlay_directory;
-}
-
 // Set default if it does not exist
 $SANITIZED_OPTS['gravity'] = isset($SANITIZED_OPTS['gravity']) ? $SANITIZED_OPTS['gravity'] : 'northwest';
 
 /* Job's done! */
 header("Content-Type: " . $img->format);
-header("X-ImageMagick-Options: " . json_encode($SANITIZED_OPTS));
-echo $img->generate($SANITIZED_OPTS);
+header("X-DynamicImage-Options: " . json_encode($SANITIZED_OPTS));
+$output = $img->generate($SANITIZED_OPTS, $SANITIZED_GET);
+$time += microtime(true);
+header("X-DynamicImage-Time: " . $time);
+echo $output;
 imagedestroy($img);
 
 ?>

@@ -18,9 +18,9 @@ class Image {
 
    }
 
-    public function generate($options) {
-        if (isset($options['dir_overlays']) && !is_dir($options['dir_overlays'])) {
-            error_log('dir_overlays ' . $options['dir_overlays'] . ' does not exist');
+    public function generate($options, $environment) {
+        if (isset($environment['dir_overlays']) && !is_dir($environment['dir_overlays'])) {
+            error_log('dir_overlays ' . $environment['dir_overlays'] . ' does not exist');
         }
 
         /* Adjust Brightness */
@@ -81,8 +81,8 @@ class Image {
         }
 
         /* Add Overlay to Desired Image */
-        if(isset($options['overlay']) && is_readable($options['dir_overlays'])) {
-            $this->generateOverlay($options['dir_overlays'], $options['overlay'], $options['gravity']);
+        if(isset($options['overlay']) && is_readable($environment['dir_overlays'])) {
+            $this->generateOverlay($environment['dir_overlays'], $options['overlay'], $options['gravity']);
         }
 
         return $this->image;
