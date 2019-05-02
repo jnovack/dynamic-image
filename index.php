@@ -50,7 +50,7 @@ if ( empty($SANITIZED_GET) || empty($SANITIZED_GET['file']) || $SANITIZED_GET['f
     exit(1);
 }
 
-$filename = $images_directory . $SANITIZED_GET['file'];
+$filename = $images_directory . "/" . $SANITIZED_GET['file'];
 
 if ( !file_exists($filename) ) {
     header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found', true, 404);
