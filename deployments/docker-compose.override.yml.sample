@@ -19,8 +19,8 @@ services:
       context: ../
       dockerfile: build/package/Dockerfile
     volumes:
-      - /Volumes/images:/mnt/images:ro
-      - /Volumes/overlays:/mnt/overlays:ro
+      - ../assets/images:/mnt/images:ro
+      - ../assets/overlays:/mnt/overlays:ro
     logging:
       driver: syslog
       options:
