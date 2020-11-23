@@ -1,8 +1,9 @@
-# php-dynamic-image
-[![Github](https://badgen.net/badge/jnovack/catchall/purple?icon=github)](https://github.com/jnovack/php-dynamic-image)
+# dynamic-image
+[![Docker](https://badgen.net/badge/jnovack/dynamic-image/blue?icon=docker)](https://hub.docker.com/r/jnovack/dynamic-image)
+[![Github](https://badgen.net/badge/jnovack/dynamic-image/purple?icon=github)](https://github.com/jnovack/dynamic-image)
 
 
-**php-dynamic-image** was created to help assist media developers by
+**dynamic-image** was created to help assist media developers by
 dynamically creating their assets from a known-good master.
 
 ## Configuration
