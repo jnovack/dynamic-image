@@ -1,0 +1,15 @@
+version: '2.2'
+
+services:
+  nginx:
+    depends_on:
+      - php
+    tmpfs:
+      - /tmp/nginx-thumbnails
+    restart: always
+
+  php:
+    restart: always
+    cpus: 0.25
+    mem_limit: 256m
+    mem_reservation: 128m

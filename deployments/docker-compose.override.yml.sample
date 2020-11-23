@@ -1,0 +1,27 @@
+version: '2.2'
+
+services:
+  nginx:
+    build:
+      context: containers/nginx/
+    volumes:
+      - ./config/key.pem:/etc/nginx/ssl/key.pem:ro
+      - ./config/certificate.pem:/etc/nginx/ssl/certificate.pem:ro
+    ports:
+      - 8000:80
+    logging:
+      driver: syslog
+      options:
+        tag: docker/{{.ImageName}}/{{.ID}}
+
+  php:
+    build:
+      context: ../
+      dockerfile: build/package/Dockerfile
+    volumes:
+      - /Volumes/images:/mnt/images:ro
+      - /Volumes/overlays:/mnt/overlays:ro
+    logging:
+      driver: syslog
+      options:
+        tag: docker/{{.ImageName}}/{{.ID}}
