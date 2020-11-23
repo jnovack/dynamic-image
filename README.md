@@ -7,5 +7,5 @@ dynamically creating their assets from a known-good master.
 
 ### Environment Variables
 
-* `PHP_DIRECTORY_OVERLAYS` - path to overlays (default './overlays')
-* `PHP_DIRECTORY_IMAGES` - path to images (default: './images')
+* `PHP_DIRECTORY_OVERLAYS` - path to overlays (default `/mnt/overlays`)
+* `PHP_DIRECTORY_IMAGES` - path to images (default: `/mnt/images`)

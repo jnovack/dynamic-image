@@ -3,8 +3,8 @@
 $time = 0-microtime(true);
 
 /* ENVIRONMENT */
-$overlay_directory = getenv('PHP_DIRECTORY_OVERLAYS', true) ?: realpath('./overlays');
-$images_directory = getenv('PHP_DIRECTORY_IMAGES', true) ?: realpath('./images');
+$overlay_directory = getenv('PHP_DIRECTORY_OVERLAYS', true) ?: realpath('/mnt/overlays');
+$images_directory = getenv('PHP_DIRECTORY_IMAGES', true) ?: realpath('/mnt/images');
 
 /* Valid options for enums */
 $enums = array(
